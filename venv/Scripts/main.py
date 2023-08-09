@@ -63,8 +63,7 @@ inputStemmed = unique(inputStemmed)
 inputStemmed = sorted(inputStemmed, key=lambda x: GetRarity(x))
 
 print(inputStemmed)
-print(inputStemmed)
-print("inputStemmed after sort by rarity with but with index.")
+print("inputStemmed after sort by rarity with but with index")
 print(GetEntrysWithRarity(inputStemmed))
 print("of.. " + str(len(corpusList)))
 
