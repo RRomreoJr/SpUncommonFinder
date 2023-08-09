@@ -3,6 +3,7 @@ import nltk
 from nltk.stem import SnowballStemmer
 from nltk.corpus import cess_esp
 import ast
+import csv
 
 # Initialize the stemmer
 stemmer = SnowballStemmer("spanish")
@@ -62,11 +63,21 @@ inputStemmed = unique(inputStemmed)
 # Sorting by rarity. (unknown) then most to least
 inputStemmed = sorted(inputStemmed, key=lambda x: GetRarity(x))
 
+
 print(inputStemmed)
 print("inputStemmed after sort by rarity with but with index")
 print(GetEntrysWithRarity(inputStemmed))
 print("of.. " + str(len(corpusList)))
 
+# open the file in the write mode
+csvF = open('csvOut.csv', 'w', newline='', encoding="UTF-8")
+writer = csv.writer(csvF)
+writer.writerow(['Word Stem','Freq'])
+
+# write a row to the csv file
+for row in GetEntrysWithRarity(inputStemmed):
+    writer.writerow(row)
+csvF.close()
 # So a coulpe of problems, the more rare a word is the
 # higher it's rarity the it's rarity will be if ordered from most
 # to least common. rarity = freq out of all the stems
