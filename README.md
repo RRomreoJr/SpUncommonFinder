@@ -2,7 +2,7 @@
 <b>Finds uncommon Spanish words and outputs to them to a .csv</b>
 
 **Knowledge Learned or Reinforced**
-- Reinforced Python knowledge
+- Python
 - NLTK library
 
 **Idea**
