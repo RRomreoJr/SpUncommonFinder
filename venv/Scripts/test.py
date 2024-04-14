@@ -25,7 +25,7 @@ def GetStemFreqDict(wordList):
 stemmer = SnowballStemmer("spanish")
 
 words = cess_esp.words()
-cess_esp.
+# dont know why this was there: cess_esp.
 print('total words: ' + str(len(words)))
 
 # print('uniqued: ' + str(len(unique(words))))
