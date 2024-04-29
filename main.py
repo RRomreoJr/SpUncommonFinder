@@ -5,7 +5,7 @@ import os
 import finder_tools
 import sp_corpus_freq_list
 # GLR = General Language Rarity
-OUTPUT_HEADER = "GLR_"
+OUTPUT_HEADER = "GLR"
 output_name = "refactor_test"
 
 SP_GENERAL_FREQ_LIST = sp_corpus_freq_list.SP_CORPUS_LIST
@@ -26,7 +26,7 @@ entries_with_rarity = finder_tools.get_stem_rarity_list(inputStemToWords.keys(),
 print("Writing files in {}".format(script_directory))
 
 # Make sure to open the files in write mode
-words_out_path = os.path.join(script_directory, "{}{}.csv".format(OUTPUT_HEADER, output_name))
+words_out_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
 with open(words_out_path, 'w', newline='', encoding="UTF-8") as wordsOut:
     for tup in entries_with_rarity:
         # print(tup)

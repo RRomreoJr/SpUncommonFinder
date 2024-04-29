@@ -67,7 +67,7 @@ def get_additional_stem_dict(CSVPath):
 fileDict = {}
 
 #PU == Personal Uniques
-OUTPUT_HEADER = "PU_"
+OUTPUT_HEADER = "PU"
 output_name = "daenerys_3_1"
 anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
 
@@ -143,7 +143,7 @@ for check in words_to_check:
     count += 1
 
 script_directory = os.path.dirname(__file__)
-result_path = os.path.join(script_directory, "{}{}.csv".format(OUTPUT_HEADER, output_name))
+result_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
 
 with open(result_path, 'w', newline='', encoding='utf-8') as resultFile:
     csvWritter = csv.writer(resultFile, delimiter='\t')
