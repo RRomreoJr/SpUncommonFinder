@@ -1,113 +1,49 @@
 # coding=utf8
-import nltk
 from nltk.stem import SnowballStemmer
-from nltk.corpus import cess_esp
-import ast
 import csv
-import regex
-import sp_corpus_freq_list
 import os
+import finder_tools
+import sp_corpus_freq_list
 # GLR = General Language Rarity
 OUTPUT_HEADER = "GLR_"
-output_name = "daenerys_3_1"
+output_name = "refactor_test"
 
+SP_GENERAL_FREQ_LIST = sp_corpus_freq_list.SP_CORPUS_LIST
 # Initialize the stemmer
 stemmer = SnowballStemmer("spanish")
 
-# Define the text to be analyzed
+script_directory = os.path.dirname(__file__)
+input_path = os.path.join(script_directory, 'input.txt')
 text = ""
 with open("input.txt", encoding='utf-8') as input_file:
     text = input_file.read()
 
-SP_GENERAL_FREQ_LIST = sp_corpus_freq_list.SP_CORPUS_LIST
+#Creating data
+inputStemToWords = finder_tools.get_stem_dict(text, stemmer)
+entries_with_rarity = finder_tools.get_stem_rarity_list(inputStemToWords.keys(), SP_GENERAL_FREQ_LIST)
 
-
-def indexOrNeg1(toCheck):
-    _count = 0
-    for e in SP_GENERAL_FREQ_LIST:
-        if e[0] == toCheck:
-            # print(toCheck +'\'s index is '  + str(_count))
-            return _count
-        _count += 1
-    # print(toCheck+'\'s index is '+ str(-1))
-    return -1
-def GetWord(toCheck):
-    _count = 0
-    for e in SP_GENERAL_FREQ_LIST:
-        if e[0] == toCheck:
-            # print(toCheck +'\'s index is '  + str(_count))
-            return _count
-        _count += 1
-    # print(toCheck+'\'s index is '+ str(-1))
-    return -1
-# Get rarity in context of the general language. -1 == not found, Most frequent == LEAST rare
-def GetRarity(_stem):
-    _index = indexOrNeg1(_stem)
-    if (_index >= 0):
-        return len(SP_GENERAL_FREQ_LIST) - _index
-    return -1
-# Returns list of (stem, rarity) tuples in context of the general language. -1 == not found, Most frequent == LEAST rare
-def GetEntrysWithRarity(_stemList):
-    newList = []
-    for _stem in _stemList:
-        newList.append((_stem, GetRarity(_stem)))
-    return newList
-def unique(_list):
-    # insert the list to the set
-    _list_set = set(_list)
-    # convert the set to the list
-    _unique_list = (list(_list_set))
-    return _unique_list
-
-#new lines replace with space. operating system independent
-text = regex.sub(r'\r?\n', r' ', text)
-#removing special charaters
-text = regex.sub(r'[^\p{L} ]', r'', text)
-
-# Tokenize the text into words
-inputWords = nltk.word_tokenize(text)
-
-
-# Used to get the orginal words that generated that stem
-inputStemToWords = dict()
-
-for w in inputWords:
-    _stemmed = stemmer.stem(w)
-    if _stemmed not in inputStemToWords:
-        # inputStemmed.append(_stemmed)
-        inputStemToWords[_stemmed] = [w]
-    else:
-        inputStemToWords[_stemmed].append(w)
-        
-inputStemmed = inputStemToWords.keys()
-# Sorting by rarity. (unknown) then most to least
-inputStemmed = sorted(inputStemmed, key=lambda x: GetRarity(x))
-
-
-# print("inputStemmed after sort by rarity with but with index")
-entries_with_rarity = GetEntrysWithRarity(inputStemmed)
-
-# Get the directory containing the script
-script_directory = os.path.dirname(__file__)
+#Writting files
 print("Writing files in {}".format(script_directory))
 
 # Make sure to open the files in write mode
 words_out_path = os.path.join(script_directory, "{}{}.csv".format(OUTPUT_HEADER, output_name))
 with open(words_out_path, 'w', newline='', encoding="UTF-8") as wordsOut:
-    for _stem in inputStemmed:
+    for tup in entries_with_rarity:
+        # print(tup)
+        _stem = tup[0]
         # print(_stem)
         wordsOut.write(inputStemToWords[_stem][0] + "\n")
-print("{}{}.csv".format(OUTPUT_HEADER, output_name))
+    print("{}{}.csv".format(OUTPUT_HEADER, output_name))
 
-#ewr = entries_with_rarity
 ewr_path = os.path.join(script_directory, 'entries_with_rarity.csv')
 with open(ewr_path, 'w', newline='', encoding="UTF-8") as ewr_file:
     writer = csv.writer(ewr_file)
     # write a row to the csv file
     for row in entries_with_rarity:
         writer.writerow(row)
-print('entries_with_rarity.csv created')
+    print('entries_with_rarity.csv created')
 
+# preview loop
 run = True
 choice = ""
 currIndex = 0
