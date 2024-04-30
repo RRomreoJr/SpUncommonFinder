@@ -18,7 +18,7 @@ def get_first_stem(inp):
 
     return stemmer.stem(inpTokenized[0])
     
-def get_anki_stem_dict(ankiCSVPath, notetype_wordCol_list=[]):
+def get_anki_stem_dict(ankiCSVPath, notetype_wordCol_list=[]): # --check
     if (len(notetype_wordCol_list) == 0):
         return None
     global stemmer
@@ -64,12 +64,12 @@ def get_additional_stem_dict(CSVPath):
             if first_stem and first_stem not in new_dict:
                 new_dict[first_stem] = first_stem
     return new_dict
-fileDict = {}
 
 #PU == Personal Uniques
 OUTPUT_HEADER = "PU"
 output_name = "daenerys_3_1"
 
+fileDict = {}
 anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
 
 # Lib files
@@ -108,18 +108,16 @@ for path in fileDict.keys():
     countDict[path] = 0
 
 print("progress: {}".format(progDisplay))
-for check in words_to_check:
+for check in words_to_check: # --check
+    #Progess tracker
     progCurr = round(count / len(words_to_check), 2)
     if (progCurr - progDisplay) >= 0.05:
         progDisplay = progCurr
         print("progress: {}".format(progDisplay))
 
     #Getting stem of first token
-    checkTokenized = nltk.word_tokenize(check.lower())
-    checkStem = None
-    if checkTokenized:
-        checkStem = stemmer.stem(checkTokenized[0])
-    else:
+    checkStem = get_first_stem(check.lower())
+    if not checkStem:
         continue
     
     newWord = True
@@ -133,6 +131,7 @@ for check in words_to_check:
 
     count += 1
 
+#Writting out results
 script_directory = os.path.dirname(__file__)
 result_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
 
