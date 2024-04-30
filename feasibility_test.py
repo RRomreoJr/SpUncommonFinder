@@ -69,6 +69,7 @@ fileDict = {}
 #PU == Personal Uniques
 OUTPUT_HEADER = "PU"
 output_name = "daenerys_3_1"
+
 anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
 
 # Lib files
@@ -78,33 +79,23 @@ anki_words_dict = get_anki_stem_dict(anki_word_path, notetype_wordCol_list=noteW
 if anki_word_path not in fileDict:
     fileDict[anki_word_path] = anki_words_dict
 
-# I overwrote the PU of this file by mistake but it doesn't really matter
-tempWordsPath = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\GLR_daenerys_2_2.csv'
-tempWordsDict = get_additional_stem_dict(tempWordsPath)
-if tempWordsPath not in fileDict:
-    fileDict[tempWordsPath] = tempWordsDict
+# Additional lib files. these are like "fake cards" that I can use to simulate each iteration
+addtional_file_paths = [
+    # I overwrote the PU of this file by mistake but it doesn't really matter
+    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\GLR_daenerys_2_2.csv',
+    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_3.csv',
+    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_4.csv',
+    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_5.csv',
+]
 
-tempWordsPath2 = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_3.csv'
-tempWordsDict2 = get_additional_stem_dict(tempWordsPath2)
-if tempWordsPath2 not in fileDict:
-    fileDict[tempWordsPath2] = tempWordsDict2
-
-tempWordsPath3 = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_4.csv'
-tempWordsDict3 = get_additional_stem_dict(tempWordsPath3)
-if tempWordsPath3 not in fileDict:
-    fileDict[tempWordsPath3] = tempWordsDict3
-
-tempWordsPath4 = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_5.csv'
-tempWordsDict4 = get_additional_stem_dict(tempWordsPath4)
-if tempWordsPath4 not in fileDict:
-    fileDict[tempWordsPath4] = tempWordsDict4
+for a_f_path in addtional_file_paths:
+    a_f_dict = get_additional_stem_dict(a_f_path)
+    if a_f_path not in fileDict:
+        fileDict[a_f_path] = a_f_dict
 
 # Input files
 words_to_check_path = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\GLR_daenerys_3_1.csv'
 words_to_check = csv_tools.get_content(words_to_check_path, 0)
-
-
-
 
 #the check is going to mean the word that we are comparing the library of words against
 res = []
