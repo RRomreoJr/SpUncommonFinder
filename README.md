@@ -1,5 +1,5 @@
 # SpUncommonFinder
-<b>Finds uncommon Spanish words and outputs to them to a .csv. Also can be used to check for unique words to given list of known words that you might already know/ are studding.</b>
+<b>Finds uncommon Spanish words and outputs to them to a .csv. Also can be used to check for unique words to given list of known words that you might already be studding or know.</b>
 
 ## Requirements
 - Python (at least version 3.9.6)
