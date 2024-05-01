@@ -5,7 +5,7 @@
 - Python (at least version 3.9.6)
 - NLTK library
 - NLTK cess_esp corpora
-- NLTK punkt
+- NLTK punkt<br>
 (set_up.bat file provided for easier installation)
 
 ## Idea
