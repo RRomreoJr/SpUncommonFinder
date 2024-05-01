@@ -6,7 +6,7 @@
 - NLTK library
 - NLTK cess_esp corpora
 - NLTK punkt
-{set_up.bat file provided for easier installation}
+(set_up.bat file provided for easier installation)
 
 ## Idea
 
