@@ -1,5 +1,5 @@
 {
-    "main":
+    "SpUncommonFinder":
     {
         "input_name_w_ext": "input.txt",
         "output_header": "GLR",

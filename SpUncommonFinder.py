@@ -8,7 +8,7 @@ import json
 
 config = None
 with open("config.json", "r", encoding='utf-8') as configFile:
-    config = json.loads(configFile.read())
+    config = json.loads(configFile.read())["SpUncommonFinder"]
 
 # GLR = General Language Rarity
 OUTPUT_HEADER = config['output_header']
