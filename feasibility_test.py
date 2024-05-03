@@ -79,9 +79,10 @@ OUTPUT_HEADER = config["output_header"]
 output_name = config["output_name_w_ext"]
 
 fileDict = {}
+anki_words_dict = None
+anki_word_path = None
 if(config["anki_path"] not in INVAILD_ANKI_PATHS):
-    anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
-
+    anki_word_path = config['anki_path']
     # Lib files
     #cardtypes and where to find the word
     noteWordColTups = [("Sp_Vocab", 3), ("Richie_Sp_Gram_Words_New", 3)]
@@ -120,7 +121,7 @@ print("progress: {}".format(progDisplay))
 for check in words_to_check: # --check
     #Progess tracker
     progCurr = round(count / len(words_to_check), 2)
-    if (progCurr - progDisplay) >= 0.05:
+    if (progCurr - progDisplay) >= 0.2:
         progDisplay = progCurr
         print("progress: {}".format(progDisplay))
 
@@ -141,7 +142,7 @@ for check in words_to_check: # --check
     count += 1
 
 #Writting out results
-result_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
+result_path = os.path.join(script_directory, "{}_{}".format(OUTPUT_HEADER, output_name))
 
 with open(result_path, 'w', newline='', encoding='utf-8') as resultFile:
     csvWritter = csv.writer(resultFile, delimiter='\t')
@@ -159,7 +160,8 @@ else:
     catchesNonAnki = catches - countDict[anki_word_path]
     print("%caught by \"fake\" anki cards: {} ({})".format(round(1 - (countDict[anki_word_path] / catches), 2), catchesNonAnki)) # I should catchesNonAnki to make the %
     print("%reduced by \"fake\" cards: {}".format(round(catchesNonAnki / (len(res) + catchesNonAnki), 2)))
-print(countDict)
+for file_name, score in countDict.items():
+    print("{}: {}".format(file_name, score))
 # print(res)
 
 
