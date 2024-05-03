@@ -7,6 +7,8 @@ import csv_tools
 import nltk
 from nltk.stem import SnowballStemmer
 import os
+import json
+INVAILD_ANKI_PATHS = set(['' , "C:\\Example\\Please\\Use\\Double\\Backslashes\\LikeThis.csv"])
 stemmer = SnowballStemmer("spanish")
 
 def get_first_stem(inp):
@@ -29,7 +31,7 @@ def get_anki_stem_dict(ankiCSVPath, notetype_wordCol_list=[]): # --check
     TUP_WORDCOL = 1
 
     with open(ankiCSVPath, encoding='utf-8') as ankiCSVFile:
-        print("opened")
+        # print("opened")
         csv_reader = csv.reader(ankiCSVFile, delimiter='\t')
 
         for noteWordTup in notetype_wordCol_list:
@@ -65,36 +67,43 @@ def get_additional_stem_dict(CSVPath):
                 new_dict[first_stem] = first_stem
     return new_dict
 
+config = None
+# Made a personal version so I don't have to push out my personal settings
+config_name = "configPersonal.json" if os.path.exists("configPersonal.json") else "config.json"
+with open(config_name, "r", encoding='utf-8') as configFile:
+    config = json.loads(configFile.read())["unique_finder"]
+script_directory = os.path.dirname(__file__)
+
 #PU == Personal Uniques
-OUTPUT_HEADER = "PU"
-output_name = "daenerys_3_1"
+OUTPUT_HEADER = config["output_header"]
+output_name = config["output_name_w_ext"]
 
 fileDict = {}
-anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
+if(config["anki_path"] not in INVAILD_ANKI_PATHS):
+    anki_word_path = r"D:\DocumentsHDD\AnkiOutTest\SpanishVocab.txt"
 
-# Lib files
-#cardtypes and where to find the word
-noteWordColTups = [("Sp_Vocab", 3), ("Richie_Sp_Gram_Words_New", 3)]
-anki_words_dict = get_anki_stem_dict(anki_word_path, notetype_wordCol_list=noteWordColTups)
-if anki_word_path not in fileDict:
-    fileDict[anki_word_path] = anki_words_dict
+    # Lib files
+    #cardtypes and where to find the word
+    noteWordColTups = [("Sp_Vocab", 3), ("Richie_Sp_Gram_Words_New", 3)]
+    anki_words_dict = get_anki_stem_dict(anki_word_path, notetype_wordCol_list=noteWordColTups)
+    if anki_word_path not in fileDict:
+        fileDict[anki_word_path] = anki_words_dict
 
 # Additional lib files. these are like "fake cards" that I can use to simulate each iteration
-addtional_file_paths = [
-    # I overwrote the PU of this file by mistake but it doesn't really matter
-    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\GLR_daenerys_2_2.csv',
-    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_3.csv',
-    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_4.csv',
-    r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\PU_daenerys_2_5.csv',
-]
+additional_file_paths = []
+for input_file in config["input_names_w_ext"]:
+    additional_file_paths.append(os.path.join(script_directory, input_file))
 
-for a_f_path in addtional_file_paths:
+for a_f_path in additional_file_paths:
     a_f_dict = get_additional_stem_dict(a_f_path)
     if a_f_path not in fileDict:
         fileDict[a_f_path] = a_f_dict
 
+if(len(fileDict) <= 0):
+    print("No libraries found to check against. Please check config.json and add some filenames to unique_finder.input_names_w_ext")
+    quit()
 # Input files
-words_to_check_path = r'D:\Users\Richie\PycharmProjects\SpUncommonFinder\GLR_daenerys_3_1.csv'
+words_to_check_path = os.path.join(script_directory, config["check_filename_w_ext"])
 words_to_check = csv_tools.get_content(words_to_check_path, 0)
 
 #the check is going to mean the word that we are comparing the library of words against
@@ -132,7 +141,6 @@ for check in words_to_check: # --check
     count += 1
 
 #Writting out results
-script_directory = os.path.dirname(__file__)
 result_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
 
 with open(result_path, 'w', newline='', encoding='utf-8') as resultFile:
@@ -140,14 +148,17 @@ with open(result_path, 'w', newline='', encoding='utf-8') as resultFile:
     for resRow in res:
         resultFile.write(resRow + '\n')
     
-print(res)
+catches = len(words_to_check) - len(res)
+# print(res)
 print("")
 print("Checks : {} New Words: {}".format(len(words_to_check), len(res)))
-catches = len(words_to_check) - len(res)
-catchesNonAnki = catches - countDict[anki_word_path]
 print("%caught: {} ({})".format(round(catches / len(words_to_check), 2), catches))
-print("%caught by \"fake\" anki cards: {} ({})".format(round(1 - (countDict[anki_word_path] / catches), 2), catchesNonAnki))
-print("%reduced by \"fake\" cards: {}".format(round(catchesNonAnki / (len(res) + catchesNonAnki), 2)))
+if(config["anki_path"] in INVAILD_ANKI_PATHS):
+    print("No Anki search")
+else:
+    catchesNonAnki = catches - countDict[anki_word_path]
+    print("%caught by \"fake\" anki cards: {} ({})".format(round(1 - (countDict[anki_word_path] / catches), 2), catchesNonAnki)) # I should catchesNonAnki to make the %
+    print("%reduced by \"fake\" cards: {}".format(round(catchesNonAnki / (len(res) + catchesNonAnki), 2)))
 print(countDict)
 # print(res)
 

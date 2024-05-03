@@ -1,5 +1,22 @@
 {
-    "input_name_w_ext": "input.txt",
-    "output_header": "GLR",
-    "output_name_w_ext": "output.csv"
+    "main":
+    {
+        "input_name_w_ext": "input.txt",
+        "output_header": "GLR",
+        "output_name_w_ext": "output.csv"
+    },
+    "unique_finder":
+    {
+        "input_names_w_ext":
+        [
+            "GLR_daenerys_2_2.csv",
+            "PU_daenerys_2_3.csv",
+            "PU_daenerys_2_4.csv",
+            "PU_daenerys_2_5.csv"
+        ],
+        "anki_path":"C:\\Example\\Please\\Use\\Double\\Backslashes\\LikeThis.csv",
+        "check_filename_w_ext":"GLR_daenerys_3_1.csv",
+        "output_header": "PU",
+        "output_name_w_ext": "output.csv"
+    }
 }
