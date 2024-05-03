@@ -4,18 +4,24 @@ import csv
 import os
 import finder_tools
 import sp_corpus_freq_list
+import json
+
+config = None
+with open("config.json", "r", encoding='utf-8') as configFile:
+    config = json.loads(configFile.read())
+
 # GLR = General Language Rarity
-OUTPUT_HEADER = "GLR"
-output_name = "refactor_test"
+OUTPUT_HEADER = config['output_header']
+output_name = config['output_name_w_ext']
 
 SP_GENERAL_FREQ_LIST = sp_corpus_freq_list.SP_CORPUS_LIST
 # Initialize the stemmer
 stemmer = SnowballStemmer("spanish")
 
 script_directory = os.path.dirname(__file__)
-input_path = os.path.join(script_directory, 'input.txt')
+input_path = os.path.join(script_directory, config['input_name_w_ext'])
 text = ""
-with open("input.txt", encoding='utf-8') as input_file:
+with open(config['input_name_w_ext'], encoding='utf-8') as input_file:
     text = input_file.read()
 
 #Creating data
@@ -26,22 +32,24 @@ entries_with_rarity = finder_tools.get_stem_rarity_list(inputStemToWords.keys(),
 print("Writing files in {}".format(script_directory))
 
 # Make sure to open the files in write mode
-words_out_path = os.path.join(script_directory, "{}_{}.csv".format(OUTPUT_HEADER, output_name))
+words_out_path = os.path.join(script_directory, "{}_{}".format(OUTPUT_HEADER, output_name))
 with open(words_out_path, 'w', newline='', encoding="UTF-8") as wordsOut:
     for tup in entries_with_rarity:
         # print(tup)
         _stem = tup[0]
         # print(_stem)
         wordsOut.write(inputStemToWords[_stem][0] + "\n")
-    print("{}{}.csv".format(OUTPUT_HEADER, output_name))
+    print("{}_{} created".format(OUTPUT_HEADER, output_name))
 
-ewr_path = os.path.join(script_directory, 'entries_with_rarity.csv')
-with open(ewr_path, 'w', newline='', encoding="UTF-8") as ewr_file:
-    writer = csv.writer(ewr_file)
+details_path = os.path.join(script_directory, "{}_details_{}".format(OUTPUT_HEADER, output_name))
+with open(details_path, 'w', newline='', encoding="UTF-8") as details_file:
+    writer = csv.writer(details_file,  delimiter='\t')
     # write a row to the csv file
+    writer.writerow([r'stem', r'rarity (-1 == wasn\'t in corpora, lower is more rare)', r'total corpora words', r'first word to make stem'])
     for row in entries_with_rarity:
-        writer.writerow(row)
-    print('entries_with_rarity.csv created')
+        new_tup = (row[0], row[1], len(SP_GENERAL_FREQ_LIST), inputStemToWords[row[0]][0])
+        writer.writerow(new_tup)
+    print("{}_details_{} created".format(OUTPUT_HEADER, output_name))
 
 # preview loop
 run = True

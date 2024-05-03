@@ -1,0 +1,5 @@
+{
+    "input_name_w_ext": "input.txt",
+    "output_header": "GLR",
+    "output_name_w_ext": "output.csv"
+}
