@@ -152,6 +152,7 @@ with open(result_path, 'w', newline='', encoding='utf-8') as resultFile:
 catches = len(words_to_check) - len(res)
 # print(res)
 print("")
+print(words_to_check_path)
 print("Checks : {} New Words: {}".format(len(words_to_check), len(res)))
 print("%caught: {} ({})".format(round(catches / len(words_to_check), 2), catches))
 if(config["anki_path"] in INVAILD_ANKI_PATHS):

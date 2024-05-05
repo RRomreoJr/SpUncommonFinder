@@ -7,7 +7,8 @@ import sp_corpus_freq_list
 import json
 
 config = None
-with open("config.json", "r", encoding='utf-8') as configFile:
+config_name = "configPersonal.json" if os.path.exists("configPersonal.json") else "config.json"
+with open(config_name, "r", encoding='utf-8') as configFile:
     config = json.loads(configFile.read())["SpUncommonFinder"]
 
 # GLR = General Language Rarity
